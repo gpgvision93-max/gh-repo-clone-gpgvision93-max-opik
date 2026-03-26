@@ -37,15 +37,14 @@ DISABLE_FLAGS = {
 
 def expand_path(path_str: str) -> Path:
     """Expand user and environment variables and return an absolute Path."""
-    expanded = os.path.expanduser(os.path.expandvars(path_str))
-    return Path(expanded).expanduser().resolve()
+    return Path(os.path.expandvars(path_str)).expanduser().resolve()
 
 
 def find_candidate_files(extra: Iterable[str] | None = None) -> List[Path]:
     """Return existing config files from default and user-supplied paths."""
     paths: List[Path] = []
     seen = set()
-    candidates = list(extra or []) + list(DEFAULT_CANDIDATES)
+    candidates = [*(extra or []), *DEFAULT_CANDIDATES]
     for cand in candidates:
         candidate_path = expand_path(cand)
         if candidate_path.exists() and candidate_path.is_file():
